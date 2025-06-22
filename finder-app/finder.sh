@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 2 ]; then
-    echo "Please provide both arguments - filesdir and searchstr"
+    echo "Please enter 2 arguments: filesdir and searchstr"
     exit 1
 fi
 

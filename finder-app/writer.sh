@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 2 ]; then
-    echo "Please provide both arguments - writefile and writestr"
+    echo "2 arguments are required: writefile and writestr"
     exit 1
 fi
 
