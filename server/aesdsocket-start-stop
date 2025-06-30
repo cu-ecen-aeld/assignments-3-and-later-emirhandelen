@@ -1,0 +1,68 @@
+#!/bin/sh
+
+DAEMON="aesdsocket"
+DAEMON_PATH="/usr/bin/$DAEMON"
+PIDFILE="/var/run/$DAEMON.pid"
+
+start() {
+    if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2>/dev/null; then
+        echo "$DAEMON is already running"
+        return 0
+    fi
+    echo "Starting $DAEMON..."
+    $DAEMON_PATH -d &
+    echo $! > "$PIDFILE"
+    echo "Started."
+}
+
+stop() {
+    if [ -f "$PIDFILE" ]; then
+        PID=$(cat "$PIDFILE")
+        if kill -0 $PID 2>/dev/null; then
+            echo "Stopping $DAEMON..."
+            kill $PID
+            rm -f "$PIDFILE"
+            echo "Stopped."
+        else
+            echo "$DAEMON not running, cleaning up."
+            rm -f "$PIDFILE"
+        fi
+    else
+        echo "$DAEMON is not running."
+    fi
+}
+
+status() {
+    if [ -f "$PIDFILE" ] && kill -0 $(cat "$PIDFILE") 2>/dev/null; then
+        echo "$DAEMON is running."
+    else
+        echo "$DAEMON is stopped."
+    fi
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        restart
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+exit 0
+
